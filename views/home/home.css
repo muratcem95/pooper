@@ -1,0 +1,14 @@
+.navbar {
+    background-color: #e3f2fd;
+    margin-bottom: 50px;
+}
+#addDiv {
+    text-align: center; 
+    margin-top: 50px;
+}
+#addIcon {
+    color: darkslategray;
+}
+#addIcon:hover {
+    cursor: pointer;
+}

@@ -1,0 +1,18 @@
+.navbar {
+    background-color: #e3f2fd;
+}
+.jumbotron {
+    background-color: #94F3D3;
+    background-image: url(../images/jumbotronImage.png);
+    background-repeat: no-repeat;
+}
+.bottomJumbo {
+    background-color: black;
+    background-image: none;
+    color: white;
+    margin-bottom: 0;
+}
+.container {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
