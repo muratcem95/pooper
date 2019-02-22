@@ -9,6 +9,12 @@ const PoopSchema = new mongoose.Schema({
     startDate: {
         type: Date
     },
+    latitude: {
+        type: String
+    },
+    longitude: {
+        type: String
+    },
     location: {
         type: String
     },

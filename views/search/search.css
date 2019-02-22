@@ -2,10 +2,6 @@
     background-color: #e3f2fd;
     margin-bottom: 50px;
 }
-#profileImage {
-    border: 3px solid gray;
-    border-radius: 10px;
-}
 #PI:hover {
     cursor: pointer;
 }
@@ -19,6 +15,12 @@
 }
 #addIcon:hover {
     cursor: pointer;
+}
+#profile {
+    border: 3px solid gray;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 50px;
 }
 #newsFeed {
     border: 3px solid gray;

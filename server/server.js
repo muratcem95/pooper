@@ -16,6 +16,7 @@ const {mongoose} = require('./db/mongoose');
 const {authenticateUser} = require('./middleware/authenticate');
 const {User} = require('./models/user');
 const {Poop} = require('./models/poop');
+const {Friend} = require('./models/friend');
 
 const viewsPath = path.join(__dirname, '../views');
 const port = process.env.PORT || 3000;
@@ -72,7 +73,7 @@ app.get('/mainPage', (req, res) => {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //USER
 app.post('/signUp', (req, res) => {
-    var user = new User({
+    var user = new User ({
         name: req.body.name,
         userName: req.body.userName,
         email: req.body.email,
@@ -108,35 +109,33 @@ app.get('/logOut', authenticateUser, (req, res) => {
 app.get('/home', authenticateUser, (req, res) => {
     var session = req.session.user; 
     
-    Poop.find({_creator: session._id}).then((poops) => {
+    Friend.find({_myself: session._id}).then((friends) => {
+        var friendsArray = [];
         
-        console.log(session);
+        for(var i=0;i<friends.length;i++) {
+            friendsArray.push(friends[i]._friend);
+        };
         
-        res.render('home/home.html', {session, poops});
+        Poop.find({_creator: {$in: friendsArray}}).sort('-startDate').populate('_creator').then((poops) => res.render('home/home.html', {session, poops})).catch((e) => res.send(e));
     }).catch((e) => res.send(e));
 });
 
-app.post('/profileImageUploadForm', (req, res) => {
-    var session = req.session.user;
-    
+app.post('/profileImageUploadForm', authenticateUser, (req, res) => {
     if(req.files) {
-        var file = req.files.filename,
-            filename = file.name;
-        file.mv("views/images/profileImages/"+filename,function(err) {
+        var PIObject = req.files.PI;
+        var profileImage = PIObject.name;
+                
+        PIObject.mv(`views/images/profileImages/${profileImage}`, function(err) {
             if(err) {
                 res.send(err);
-            } else {   
-                var fns = JSON.stringify(filename);
-                var fn = JSON.parse(fns);
-                
-                console.log(fns);
-                console.log(fn);
+            } else {    
+                var session = req.session.user;
                 
                 User.findByIdAndUpdate({
                     _id: session._id
                 }, { 
                     $set: { 
-                        profileImage: fn
+                        profileImage
                     }
                 }, {
                     new: true
@@ -152,12 +151,60 @@ app.post('/newPoopForm', authenticateUser, (req, res) => {
     var poop = new Poop ({
         description: req.body.description,
         startDate: moment(),
-        location: "Will figure this out.",
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        location: req.body.location,
         _creator: session._id
     });
-    poop.save().then(() => res.redirect('/home')).catch((e) => res.send(e));
+    poop.save().then().catch((e) => res.send(e));
 });
 
+app.post('/searchFriends', authenticateUser, (req, res) => {
+    var session = req.session.user;
+    
+    User.find({userName: req.body.searchUserName}).then((friend) => {
+        Poop.find({_creator: friend[0]._id}).populate('_creator').sort('-startDate').then((poops) => {
+            Friend.find({_myself: session._id}).then((friendList) => {
+                if (JSON.stringify(friend[0]._id) === JSON.stringify(session._id)) {
+                    var myself = true;
+                    res.render('search/search.html', {session, poops, friend, myself});
+                } else {
+                    if(friendList.length === 0) {
+                        res.render('search/search.html', {session, poops, friend});
+                    } else {
+                        var repeat = [];
+                        for(var i=0;i<friendList.length;i++) {
+                            if (JSON.stringify(friendList[i]._friend) === JSON.stringify(friend[0]._id)) {
+                                repeat.push(true);
+                            } else {
+                                repeat.push(false);
+                            };
+                        };
+                        var repeatBoolean = repeat.includes(true);
+
+                        res.render('search/search.html', {session, poops, friend, repeatBoolean});
+                    };
+                };
+            }).catch((e) => res.send(e));    
+        }).catch((e) => res.send(e));
+    }).catch((e) => res.send(e));
+});
+
+app.post('/addFriend', authenticateUser, (req, res) => {
+    var session = req.session.user;
+    
+    var friend = new Friend ({
+        _myself: session._id,
+        _friend: req.body.friendId
+    });
+    friend.save().then(() => {
+        var friend2 = new Friend({
+            _myself: req.body.friendId,
+            _friend: session._id
+        });
+        friend2.save().then(() => res.redirect('/home')).catch((e) => res.send(e));
+    }).catch((e) => res.send(e));
+});
 
 
 

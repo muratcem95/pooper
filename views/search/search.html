@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" type="text/css" href="../search/search.css">
+
+        <title>Pooper | Search</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="/home">Pooper</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <form class="form-inline my-2 my-lg-0" method="post" action="/searchFriends">
+                    <input class="form-control mr-sm-2" type="text" placeholder="Search username" aria-label="Search" name="searchUserName">
+                    <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+                </form>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href=""></a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Dropdown
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logOut">Log out</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>    
+        
+        <div class="container">            
+            {{#if friend}}
+                {{#each friend}}
+                    {{#if ../myself}}
+                        <p>It's weird that you are searching yourself poop head, but sure, go ahead.</p>
+                    {{/if}}
+                    <div id="profile" class="text-center">
+                        <img id="profileProfileImage" src="../images/profileImages/{{profileImage}}" width=auto height="200px">
+                        <div id="profileNameAndUserName">
+                            <p id="profileName">{{name}}</p>
+                            <p id="profileUserName">{{userName}}</p>
+                        </div>
+                        <p id="profileEmail">{{email}}</p>
+                        <p id="profilePhone">{{phone}}</p>
+                        {{#if ../myself}}
+                            <form method="post" action="/addFriend">
+                                <input type="text" value="{{_id}}" name="friendId" hidden>
+                                <button class="btn btn-outline-primary" disabled>It's you poopy.</button>
+                            </form>
+                        {{else}}
+                            {{#if ../repeatBoolean}}
+                                <form method="post" action="/addFriend">
+                                    <input type="text" value="{{_id}}" name="friendId" hidden>
+                                    <button class="btn btn-outline-primary" disabled>Already pooping together.</button>
+                                </form>
+                            {{else}}
+                                <form method="post" action="/addFriend">
+                                    <input type="text" value="{{_id}}" name="friendId" hidden>
+                                    <button class="btn btn-outline-primary">Yes, this is the poop I was looking for!</button>
+                                </form>
+                            {{/if}}
+                        {{/if}}
+                        
+                    </div>    
+                {{/each}}
+            
+                {{#if poops}}
+                    {{#if myself}}
+                        <p>Tha real poop's poop feed</p>
+                    {{else}}
+                        {{#each friend}}
+                            <h4>{{userName}}'s poop feed</h4>
+                        {{/each}}
+                    {{/if}}
+                    {{#each poops}}
+                        <div id="newsFeed">
+                            {{#if _creator.profileImage}}
+                                <img id="newsFeedProfileImage" src="../images/profileImages/{{_creator.profileImage}}">
+                            {{/if}}
+                            <small class="text-muted" id="newsFeedStartDate">{{startDate}}</small>
+                            <div id="newsFeedUserNameAndLocation">
+                                <p id="newsFeedUserName">{{_creator.userName}}</p>
+                                <small class="text-muted" id="newsFeedLocation">{{location}}</small>
+                            </div>    
+                            <div style="clear: both"></div>
+                            <p id="newsFeedDescription">Description: {{description}}</p>
+                        </div>   
+                    {{/each}}
+                {{else}}
+                    {{#if myself}}
+                        <p>You have not started pooping yet.</p>
+                    {{else}}
+                        <p>Your friend has not started pooping yet.</p>
+                    {{/if}}
+                {{/if}}
+            {{else}}
+                <p>Sorry, no users under this username.</p>
+            {{/if}}
+            
+            
+        </div>    
+        
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="../../jsUtils/moment/moment.js"></script>
+        <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="../search/search.js"></script>
+    </body>
+</html>
