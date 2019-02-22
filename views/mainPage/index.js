@@ -6,3 +6,8 @@ socket.on('connect', function() {
 socket.on('disconnect', function() {
     console.log('Disconnected from server.');
 });
+
+function chkCase(elem) {
+    var temp = elem.value;
+    elem.value = temp.toLowerCase();
+};

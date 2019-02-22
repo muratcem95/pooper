@@ -15,3 +15,8 @@ $("#newPoopForm").submit(function(e) {
         window.location.href = "/home";
     }, 5000);
 });
+
+function chkCase(elem) {
+    var temp = elem.value;
+    elem.value = temp.toLowerCase();
+};

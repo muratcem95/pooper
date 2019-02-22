@@ -7,3 +7,8 @@ $(function () {
 $(document).ready(function () {
     bsCustomFileInput.init();
 });
+
+function chkCase(elem) {
+    var temp = elem.value;
+    elem.value = temp.toLowerCase();
+};
