@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" type="text/css" href="hm.css">
+        <title>Pooper | Home</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="/hm">Pooper</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <form class="form-inline my-2 my-lg-0" method="post" action="/srch">
+                    <input class="form-control mr-sm-2" type="text" placeholder="Search By Username" aria-label="Search" name="search" onkeyup="chkCase(this)">
+                    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+                </form>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/hm">Home<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        {{#if cmntNtf}}
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Notifications <span class="fa-stack fa-1x"><i class="fa fa-circle fa-stack-2x" style="color:indianred;"></i><span class="fa fa-stack-1x fa-inverse">{{cmntNtfLg}}</span></span></a>
+                        {{else}}
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Notifications</a>
+                        {{/if}}
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {{#if cmntNtf}}
+                                {{#each cmntNtf}}
+                                    <form method="post" action="/cmntNtfDlt">
+                                        <input name="_cmnt" value="{{_id}}" hidden>
+                                        <div class="dropdown-item" data-toggle="modal" data-target="#cmntNtfMdl" data-dsc="{{_pp.dsc}}" data-cmntr="{{_cmntr.usrNm}}" data-cmnt="{{cmnt}}">
+                                            <button id="cmntNtfDltBtn" type="submit"><i id="cmntNtfDltI" class="fas fa-minus-circle"></i></button>
+                                            <p><b data-toggle="modal" data-target="#cmntNtfMdl" data-dsc="{{_pp.dsc}}" data-cmntr="{{_cmntr.usrNm}}" data-cmnt="{{cmnt}}">{{commenterId.userName}}</b><br></p>
+                                            <p data-toggle="modal" data-target="#cmntNtfMdl" data-dsc="{{_pp.dsc}}" data-cmntr="{{_cmntr.usrNm}}" data-cmnt="{{cmnt}}">{{comment}}</p>
+                                        </div> 
+                                    </form>    
+                                    <hr>
+                                {{/each}}
+                            {{else}}
+                                <a class="dropdown-item" href="">You have no new comments.</a>
+                            {{/if}}
+                        </div>  
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            My Profile
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">My News Feed</a>
+                            <a class="dropdown-item" href="#">Past Notifications</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Friends</a>
+                            <a class="dropdown-item" href="#">Groups</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Edit Profile</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/lgO">Log out</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>    
+        <ul class="nav mnNv justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link active crntPg" href="#">Friends</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">People Around Me</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Groups
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#">Vegan</a>
+                    <a class="dropdown-item" href="#">Meat Eaters</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Athletes</a>
+                </div>
+            </li>
+        </ul>
+        <div class="modal fade" id="cmntNtfMdl" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Comment by <span id="modal-cmntr"></span></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Your poop: <span id="modal-dsc"></span></p>
+                        <p>Comment: <span id="modal-cmnt"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            {{#if ss.pi}}
+                <div class="text-center"><img id="pi" src="../img/pi/{{ss.pi}}" width=auto height="200px"></div>
+            {{else}}
+                <h6>Profile Image Upload</h6>
+                <form method="post" enctype="multipart/form-data" action="/piUpl">
+                    <div class="input-group">    
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="piU" name="piU">
+                            <label class="custom-file-label" for="customFile">Choose Profile Image</label>
+                        </div>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">Upload Profile Image</button>
+                        </div>    
+                    </div>    
+                </form>
+            {{/if}}
+            <div id="newPpDv" data-toggle="tooltip" data-placement="top" title="Start A New Poop">
+                    <i id="newPpI" class="fas fa-plus-circle fa-5x" data-toggle="modal" data-target="#newPpMdl"></i>
+            </div>    
+            <div class="modal fade" id="newPpMdl" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">Start A New Poop</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="newPp" method="post" action="/newPp">
+                                <div class="form-group">
+                                    <input class="form-control" id="lat" name="lat" hidden>
+                                    <input class="form-control" id="lng" name="lng" hidden>
+                                    <input class="form-control" id="loc" name="loc" hidden>
+                                    <textarea class="form-control" id="desc" name="desc" rows="3" placeholder="We would like to hear the details..."></textarea>
+                                    <small class="form-text text-muted">Tell us about your poop-feelings!</small>
+                                </div> 
+                                <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#cngMdl">Start</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="cngMdl" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">Congragulations On Your Poop!</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Beautiful.<br>Now everybody knows you are pooping.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{#if pp}}
+                <h4>Friends' poop feed</h4>
+                {{#each pp}}
+                    <div id="nf">
+                        {{#if _crtr.pi}}
+                            <img id="nfPi" src="../img/pi/{{_crtr.pi}}">
+                        {{/if}}
+                        <small class="text-muted" id="nfStdt">{{stDt}}</small>
+                        <p>{{_crtr.usrNm}}</p>
+                        <small class="text-muted">{{loc}}</small>   
+                        <div style="clear:both"></div>
+                        <p>Description: {{dsc}}</p>
+                        <small id="cmntBtn" class="text-muted" data-toggle="modal" data-target="#cmntMdl{{_id}}">Comment</small>
+                        <small class="text-muted">({{cmntLg}})</small>
+                        <!-- Modal -->
+                        <div class="modal fade" id="cmntMdl{{_id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">Comment On The Poop</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{#if cmnts}}
+                                            <h6>Past Comments</h6>
+                                            {{#each cmnts}}    
+                                                <div id="indCmnt">
+                                                    <small class="text-muted" id="nfStDt">{{cmntDt}}</small>
+                                                    {{#if cmntPi}}
+                                                        <img id="nfPi" class="cmntPi" src="../img/pi/{{cmntPi}}">
+                                                    {{/if}}
+                                                    <p>{{cmntUn}}</p>
+                                                    <p>{{cmnt}}</p>
+                                                </div>    
+                                            {{/each}}
+                                        {{/if}}
+                                        <form id="cmnt" method="post" action="/cmnt">
+                                            <div class="form-group">
+                                                <input class="form-control" name="cmntPi" value="{{../ss.pi}}" hidden>
+                                                <input class="form-control" name="cmntUsrNm" value="{{../ss.usrNm}}" hidden>
+                                                <input class="form-control" name="_pp" value="{{_id}}" hidden>
+                                                <input class="form-control" name="_ppCrtr" value="{{_crtr._id}}" hidden>
+                                                <textarea class="form-control" name="cmnt" rows="3" placeholder="Why are you even commenting on a poop feed?"></textarea>
+                                            </div> 
+                                            <button type="submit" class="btn btn-primary btn-sm">Comment</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>    
+                {{/each}}
+            {{else}}
+                <p>Your friends have not started pooping yet.</p>
+            {{/if}}
+        </div>    
+        <script src="../jsU/jquery-3.3.1.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="../../jsU/moment.js"></script>
+        <script src="../jsU/geo.js"></script>
+        <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="hm.js"></script>
+    </body>
+</html>

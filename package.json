@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server/server.js",
+    "start": "node srv/srv.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
     "node": "8.12.0"
   },
-  "author": "Murat Kocak",
+  "author": "MCK Coding Projects",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -1,0 +1,73 @@
+.navbar{
+    background-color:#e3f2fd;
+}
+.mnNv{
+    margin-bottom:50px;
+}
+.crntPg{
+    font-weight:bold;
+}
+.ntfs{
+    cursor:pointer;
+}
+#cmntNtfDltBtn{
+    float:right;
+    border:none;
+    background-color:white;
+}
+#cmntNtfDltI{
+    color:indianred;
+}
+#pi{
+    border:3px solid gray;
+    border-radius:10px;
+}
+#piU:hover{
+    cursor:pointer;
+}
+#newPpDv{
+    text-align:center; 
+    margin-top:50px;
+    margin-bottom:50px;
+}
+#newPpI{
+    color:darkslategray;
+}
+#newPpI:hover{
+    cursor:pointer;
+}
+#nf{
+    border:3px solid gray;
+    border-radius:10px;
+    padding:20px;
+    margin-top:50px;
+    margin-bottom:50px;
+}
+#nfPi{
+    float:left;
+    height:100px;
+    width:100px;
+    border:3px solid #e3f2fd;
+    border-radius:10px;
+    margin-right:20px;
+}
+#nfUsrNm{
+    font-weight:bold;
+}
+#nfStDt{
+    float:right;
+}
+#cmntBtn:hover{
+    cursor:pointer;
+}
+#indCmnts{
+    border:1px dotted gray;
+    border-radius:5px;
+    margin-top:10px;
+    margin-bottom:10px;
+    padding:10px;
+}
+.cmntImg{
+    width:30px !important;
+    height:30px !important;
+}
