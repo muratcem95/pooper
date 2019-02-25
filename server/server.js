@@ -17,6 +17,7 @@ const {authenticateUser} = require('./middleware/authenticate');
 const {User} = require('./models/user');
 const {Poop} = require('./models/poop');
 const {Friend} = require('./models/friend');
+const {CommentNotification} = require('./models/commentNotification');
 
 const viewsPath = path.join(__dirname, '../views');
 const port = process.env.PORT || 3000;
@@ -116,8 +117,19 @@ app.get('/home', authenticateUser, (req, res) => {
             friendsArray.push(friends[i]._friend);
         };
         
-        Poop.find({_creator: {$in: friendsArray}}).sort('-startDate').populate('_creator').then((poops) => res.render('home/home.html', {session, poops})).catch((e) => res.send(e));
+        Poop.find({_creator: {$in: friendsArray}}).sort('-startDate').populate('_creator').then((poops) => {
+            CommentNotification.find({pooperId: session._id}).populate('poopId').populate('commenterId').sort('-commentDate').then((commentNotifications) => {
+                console.log(commentNotifications);
+                var commentNotificationsLength = commentNotifications.length;
+                
+                res.render('home/home.html', {session, poops, commentNotifications, commentNotificationsLength});
+            }).catch((e) => res.send(e));
+        }).catch((e) => res.send(e));
     }).catch((e) => res.send(e));
+});
+
+app.post('/commentNotificationsDeleteForm', authenticateUser, (req, res) => {
+    CommentNotification.findByIdAndDelete({_id: req.body.commentId}).then(() => res.redirect('home')).catch((e) => res.send(e));
 });
 
 app.post('/profileImageUploadForm', authenticateUser, (req, res) => {
@@ -157,6 +169,39 @@ app.post('/newPoopForm', authenticateUser, (req, res) => {
         _creator: session._id
     });
     poop.save().then().catch((e) => res.send(e));
+});
+
+app.post('/commentForm', authenticateUser, (req, res) => {
+    var session = req.session.user;
+    
+    var comments = {
+        poopProfileImage: req.body.poopProfileImage,
+        comment: req.body.comment, 
+        commentUserName: req.body.poopUserName, 
+        commentDate: new Date()
+    };
+    
+    Poop.findByIdAndUpdate({
+        _id: req.body.poopId
+    }, {
+        $push: {
+            comments,
+        },
+        $inc: { 
+            commentLength: 1 
+        }
+    }, {
+        new: true
+    }).then(() => {
+        var commentNotification = new CommentNotification({
+            poopId: req.body.poopId,
+            pooperId: req.body.pooperId,
+            commenterId: session._id,
+            comment: req.body.comment,
+            commentDate: new Date()
+        });
+        commentNotification.save().then(() => res.redirect('/home')).catch((e) => res.send(e));
+    }).catch((e) => res.send(e));
 });
 
 app.post('/searchFriends', authenticateUser, (req, res) => {

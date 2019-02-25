@@ -2,6 +2,21 @@
     background-color: #e3f2fd;
     margin-bottom: 50px;
 }
+.notificationsLength {
+    width: 20%;
+    height: 20%;
+}
+.notifs {
+    cursor: pointer;
+}
+#deleteCommentNotificationBtn {
+    float: right;
+    border: none;
+    background-color: white;
+}
+#commentDeleteIcon {
+    color: indianred;
+}
 #profileImage {
     border: 3px solid gray;
     border-radius: 10px;
@@ -43,4 +58,18 @@ newsFeedUserNameAndLocation {
 }
 #newsFeedStartDate {
     float: right;
+}
+#commentBtn:hover {
+    cursor: pointer;
+}
+#indComments {
+    border: 1px dotted gray;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+.commentImage {
+    width: 30px !important;
+    height:30px !important;
 }

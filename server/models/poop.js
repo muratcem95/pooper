@@ -18,6 +18,14 @@ const PoopSchema = new mongoose.Schema({
     location: {
         type: String
     },
+    comments: {
+        type: Array,
+        default: []
+    },
+    commentLength: {
+        type: Number,
+        default: 0
+    },
     _creator: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users'

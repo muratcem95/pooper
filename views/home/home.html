@@ -32,6 +32,35 @@
                         <a class="nav-link" href=""></a>
                     </li>
                     <li class="nav-item dropdown">
+                        {{#if commentNotifications}}
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Notifications  <span class="fa-stack fa-1x"><i class="fa fa-circle fa-stack-2x" style="color: indianred;"></i><span class="fa fa-stack-1x fa-inverse">{{commentNotificationsLength}}</span></span>
+                            </a>
+                        {{else}}
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Notifications  
+                            </a>
+                        {{/if}}
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {{#if commentNotifications}}
+                                {{#each commentNotifications}}
+                                    <form method="post" action="/commentNotificationsDeleteForm">
+                                        <input name="commentId" value="{{_id}}" hidden>
+                                        <div class="dropdown-item notifs" data-toggle="modal" data-target="#commentNotificationsModal" data-poop="{{poopId.description}}" data-username="{{commenterId.userName}}" data-comment="{{comment}}">
+                                            <button id="deleteCommentNotificationBtn" type="submit"><i id="commentDeleteIcon" class="fas fa-minus-circle"></i></button>
+                                            <p><b data-toggle="modal" data-target="#commentNotificationsModal" data-poop="{{poopId.description}}" data-username="{{commenterId.userName}}" data-comment="{{comment}}">{{commenterId.userName}}</b><br></p>
+                                            <p data-toggle="modal" data-target="#commentNotificationsModal" data-poop="{{poopId.description}}" data-username="{{commenterId.userName}}" data-comment="{{comment}}">{{comment}}</p>
+                                        </div> 
+                                    </form>    
+                                    <hr>
+                                {{/each}}
+                            {{else}}
+                                <a class="dropdown-item" href="#" disabled>You have no new comments.</a>
+                            {{/if}}
+                        </div>
+                        
+                    </li>
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Dropdown
                         </a>
@@ -48,6 +77,24 @@
                 </ul>
             </div>
         </nav>    
+        
+        <!-- Modal -->
+        <div class="modal fade" id="commentNotificationsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Comment by <span id="modal-username"></span></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Your poop: <span id="modal-poop"></span></p>
+                        <p>Comment: <span id="modal-comment"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <div class="container">
             {{#if session.profileImage}}
@@ -129,6 +176,47 @@
                         </div>    
                         <div style="clear: both"></div>
                         <p id="newsFeedDescription">Description: {{description}}</p>
+                        <small id="commentBtn" class="text-muted" data-toggle="modal" data-target="#commentPoop{{_id}}">Comment</small>
+                        <small class="text-muted">({{commentLength}})</small>
+                        
+                        <!-- Modal -->
+                        <div class="modal fade" id="commentPoop{{_id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">Comment On The Poop</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{#if comments}}
+                                            <h6>Past Comments</h6>
+                                            {{#each comments}}    
+                                                <div id="indComments">
+                                                    <small class="text-muted" id="newsFeedStartDate">{{commentDate}}</small>
+                                                    {{#if poopProfileImage}}
+                                                        <img id="newsFeedProfileImage" class="commentImage" src="../images/profileImages/{{poopProfileImage}}">
+                                                    {{/if}}
+                                                    <p id="newsFeedUserName">{{commentUserName}}</p>
+                                                    <p>{{comment}}</p>
+                                                </div>    
+                                            {{/each}}
+                                        {{/if}}
+                                        <form id="commentForm" method="post" action="/commentForm">
+                                            <div class="form-group">
+                                                <input class="form-control" name="poopProfileImage" value="{{../session.profileImage}}" hidden>
+                                                <input class="form-control" name="poopUserName" value="{{../session.userName}}" hidden>
+                                                <input class="form-control" name="poopId" value="{{_id}}" hidden>
+                                                <input class="form-control" name="pooperId" value="{{_creator._id}}" hidden>
+                                                <textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Why are you even commenting on a poop feed?"></textarea>
+                                            </div> 
+                                            <button type="submit" class="btn btn-primary btn-sm">Comment</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>    
                 {{/each}}
             {{else}}
